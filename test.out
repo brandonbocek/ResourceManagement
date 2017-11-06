@@ -1,0 +1,89 @@
+Process number 0 spawned at 0.000000000
+Process number 1 spawned at 0.248292645
+Process number 2 spawned at 0.299901922
+Process number 3 spawned at 0.541404534
+Process number 4 spawned at 0.800786839
+Process number 5 spawned at 0.813354307
+Process number 6 spawned at 0.968455853
+Begin deadlock detection at 1.1263
+	Operating System detected process 0 is deadlocked
+	Killing process 0
+Begin deadlock detection at 1.1263
+No processes are deadlocked
+Process number 0 spawned at 1.099959996
+Process number 7 spawned at 1.202677076
+Process number 8 spawned at 1.296080868
+Process number 9 spawned at 1.346087674
+Process number 10 spawned at 1.357109426
+Process number 1 spawned at 1.507460912
+Process number 11 spawned at 1.708952299
+Process number 12 spawned at 1.752626570
+Process number 13 spawned at 1.965428198
+Begin deadlock detection at 2.1591
+	Operating System detected process 2 is deadlocked
+	Killing process 2
+Begin deadlock detection at 2.1591
+No processes are deadlocked
+Process number 2 spawned at 2.004684860
+Process number 3 spawned at 2.031938417
+Process number 14 spawned at 2.165943095
+Process number 15 spawned at 2.387280256
+Process number 5 spawned at 2.615448414
+Process number 10 spawned at 2.774890345
+Process number 16 spawned at 2.855708424
+Process number 17 spawned at 2.979706811
+Begin deadlock detection at 3.7740
+No processes are deadlocked
+Process number 14 spawned at 3.364330472
+Begin deadlock detection at 4.9762
+	Operating System detected process 12 is deadlocked
+	Killing process 12
+Begin deadlock detection at 4.9762
+	Operating System detected process 1 is deadlocked
+	Killing process 1
+Begin deadlock detection at 4.9762
+	Operating System detected process 8 is deadlocked
+	Killing process 8
+Begin deadlock detection at 4.9762
+	Operating System detected process 3 is deadlocked
+	Killing process 3
+Begin deadlock detection at 4.9762
+No processes are deadlocked
+Process number 1 spawned at 4.110967947
+Process number 3 spawned at 4.176675637
+Process number 4 spawned at 4.453172525
+Process number 5 spawned at 4.458407870
+Process number 8 spawned at 4.493244583
+Process number 12 spawned at 4.652291707
+Process number 15 spawned at 4.863344490
+Process number 16 spawned at 4.938095261
+Begin deadlock detection at 5.15321
+No processes are deadlocked
+Begin deadlock detection at 6.15473
+No processes are deadlocked
+Begin deadlock detection at 7.20287
+No processes are deadlocked
+Begin deadlock detection at 8.23406
+No processes are deadlocked
+Begin deadlock detection at 9.27434
+No processes are deadlocked
+Begin deadlock detection at 10.33186
+No processes are deadlocked
+Begin deadlock detection at 11.36242
+No processes are deadlocked
+Begin deadlock detection at 12.52324
+No processes are deadlocked
+Begin deadlock detection at 13.58321
+No processes are deadlocked
+Begin deadlock detection at 14.58877
+No processes are deadlocked
+Begin deadlock detection at 15.73036
+No processes are deadlocked
+Begin deadlock detection at 16.80724
+No processes are deadlocked
+Begin deadlock detection at 17.84142
+No processes are deadlocked
+Begin deadlock detection at 18.89778
+No processes are deadlocked
+Begin deadlock detection at 19.91831
+No processes are deadlocked
