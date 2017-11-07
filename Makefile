@@ -1,18 +1,18 @@
-all: oss user
-.PHONY: clean
+all: oss user log.out
 
-OSSOBJ = oss.o 
-USEROBJ = user.o
-CC = gcc -g
+log.out:
+	touch log.out
 
-oss: $(OSSOBJ)
-	$(CC) -o oss oss.o
-user: $(USEROBJ)
-	$(CC) -o user user.o
-oss.o: oss.c struct.h  project5oss.h
-	$(CC) -c oss.c
-user.o: user.c struct.h project5user.h
-	$(CC) -c user.c
+oss:
+	gcc -o oss oss.c
+
+user:
+	gcc -o user user.c
+
+
 clean:
-	-rm oss user $(OSSOBJ) $(USEROBJ)
+	rm -f oss
+	rm -f user
+	rm -f *.out
+
 

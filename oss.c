@@ -13,7 +13,7 @@ int main (int argc, char **argv)
 
     int index;
     filename = malloc(sizeof (char)*DEFAULT_FILE_SIZE); //cmd line 'l' : output file name
-    strcpy(filename, "test.out");
+    strcpy(filename, "log.out");
 
 
     //process cmd line arguments
@@ -510,6 +510,7 @@ void performProcessCleanup(int i) {
 
 }
 
+//returns the number of deadlocked processes
 int deadlockCheck(void) {
     printf("Begin deadlock detection at %llu.%llu\n", mainStruct->virtualClock / NANOPERSECOND, mainStruct->virtualClock % NANOPERSECOND);
     fprintf(file,"Begin deadlock detection at %llu.%llu\n", mainStruct->virtualClock / NANOPERSECOND, mainStruct->virtualClock % NANOPERSECOND);
@@ -557,7 +558,7 @@ int deadlockCheck(void) {
         //fprintf(file,"%d processes: ", deadlockCount);
         for(p = 0; p < 18; p++) {
             if(!finish[p]) {
-                printf("%d ", p);
+                //printf("%d ", p); Numbers printing
             }
         }
         //printf("are deadlocked\n");
@@ -721,7 +722,7 @@ void printHelpMessage(void) {
     printf("\n\n***************Command Line Argument Guide***********************************************\n\n");
     printf("%-15s%s", "-h", "Displays functions of all cmd line arguments\n\n");
     printf("%-15s%s", "-v", "Switches to verbose mode, printing all debug info\n\n");
-    printf("%-15s%s", "-l filename", "Replace 'filename' with desired output file name (default 'test.out')\n\n");
+    printf("%-15s%s", "-l filename", "Replace 'filename' with desired output file name (default 'log.out')\n\n");
     printf("%-15s%s", "-t z", "Integer that indicates time(s) until program self terminates (default 20) \n\n");
     printf("*****************************************************************************************\n\n");
 }

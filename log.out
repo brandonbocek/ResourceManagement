@@ -1,0 +1,112 @@
+Process number 0 spawned at 0.000000000
+Process number 1 spawned at 0.069557147
+Process number 2 spawned at 0.157740484
+Process number 3 spawned at 0.354263184
+Process number 4 spawned at 0.601472595
+Process number 5 spawned at 0.712429414
+Process number 6 spawned at 0.922228566
+Begin deadlock detection at 1.8623
+	Operating System detected process 1 is deadlocked
+	Killing process 1
+Begin deadlock detection at 1.8623
+	Operating System detected process 2 is deadlocked
+	Killing process 2
+Begin deadlock detection at 1.8623
+	Operating System detected process 0 is deadlocked
+	Killing process 0
+Begin deadlock detection at 1.8623
+No processes are deadlocked
+Process number 0 spawned at 1.099733852
+Process number 1 spawned at 1.295010087
+Process number 2 spawned at 1.478390685
+Process number 7 spawned at 1.691402442
+Process number 8 spawned at 1.874862597
+Begin deadlock detection at 2.11683
+	Operating System detected process 5 is deadlocked
+	Killing process 5
+Begin deadlock detection at 2.11683
+	Operating System detected process 3 is deadlocked
+	Killing process 3
+Begin deadlock detection at 2.11683
+No processes are deadlocked
+Process number 3 spawned at 2.106821067
+Process number 4 spawned at 2.201953152
+Process number 5 spawned at 2.443210668
+Process number 9 spawned at 2.613145777
+Process number 10 spawned at 2.887896524
+Begin deadlock detection at 3.19033
+	Operating System detected process 6 is deadlocked
+	Killing process 6
+Begin deadlock detection at 3.19033
+No processes are deadlocked
+Process number 6 spawned at 3.015197329
+Process number 7 spawned at 3.156134850
+Process number 11 spawned at 3.185217573
+Process number 12 spawned at 3.352418602
+Process number 13 spawned at 3.477146132
+Process number 14 spawned at 3.484808253
+Process number 15 spawned at 3.723905129
+Process number 16 spawned at 3.904922288
+Begin deadlock detection at 4.21865
+	Operating System detected process 8 is deadlocked
+	Killing process 8
+Begin deadlock detection at 4.21865
+No processes are deadlocked
+Process number 8 spawned at 4.013993737
+Process number 17 spawned at 4.081843260
+Process number 4 spawned at 4.276741671
+Process number 10 spawned at 4.394751390
+Begin deadlock detection at 5.26505
+No processes are deadlocked
+Process number 12 spawned at 5.669754012
+Process number 13 spawned at 5.805446917
+Process number 15 spawned at 5.973117820
+Begin deadlock detection at 6.30442
+	Operating System detected process 16 is deadlocked
+	Killing process 16
+Begin deadlock detection at 6.30442
+	Operating System detected process 9 is deadlocked
+	Killing process 9
+Begin deadlock detection at 6.30442
+No processes are deadlocked
+Process number 9 spawned at 6.015362730
+Process number 10 spawned at 6.049717250
+Process number 16 spawned at 6.099376238
+Process number 4 spawned at 6.226424557
+Process number 7 spawned at 6.299759062
+Process number 11 spawned at 6.529784508
+Process number 14 spawned at 6.746653662
+Process number 17 spawned at 6.829598709
+Begin deadlock detection at 7.31798
+	Operating System detected process 13 is deadlocked
+	Killing process 13
+Begin deadlock detection at 7.31798
+No processes are deadlocked
+Process number 12 spawned at 7.086324207
+Process number 13 spawned at 7.164066295
+Process number 15 spawned at 7.382993624
+Begin deadlock detection at 8.37384
+No processes are deadlocked
+Process number 11 spawned at 8.311123184
+Begin deadlock detection at 9.45181
+No processes are deadlocked
+Begin deadlock detection at 10.56575
+No processes are deadlocked
+Begin deadlock detection at 11.60493
+No processes are deadlocked
+Begin deadlock detection at 12.70277
+No processes are deadlocked
+Begin deadlock detection at 13.80335
+No processes are deadlocked
+Begin deadlock detection at 14.90507
+No processes are deadlocked
+Begin deadlock detection at 15.92940
+No processes are deadlocked
+Begin deadlock detection at 16.93582
+No processes are deadlocked
+Begin deadlock detection at 17.99001
+No processes are deadlocked
+Begin deadlock detection at 18.103797
+No processes are deadlocked
+Begin deadlock detection at 19.112178
+No processes are deadlocked

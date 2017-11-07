@@ -19,6 +19,7 @@ typedef struct msgbuf {
   char mText[80];
 } msgbuf;
 
+
 typedef struct resourceAlloc {
   int quantity[20];
 } resourceAlloc;
