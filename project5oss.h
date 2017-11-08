@@ -15,12 +15,43 @@
 #include <errno.h>
 #include <time.h>
 #include <stdbool.h>
-#include "struct.h"
+//#include "struct.h"
 
 #define NANOPERSECOND 1000000000
 
+typedef struct clockStruct {
+  long long virtualClock;
+  int sigNotReceived;
+  pid_t scheduledProcess;
+} clockStruct;
+
+typedef struct msgbuf {
+  long mType;
+  char mText[80];
+} msgbuf;
 
 
+typedef struct resourceAlloc {
+  int quantity[20];
+} resourceAlloc;
+
+typedef struct PCB {
+  pid_t processID;
+  int request;
+  int release;
+  int deadlocked;
+  int terminate;
+  resourceAlloc allocation;
+  long long totalTimeRan;
+  long long createTime;
+} PCB;
+
+typedef struct resource {
+  int quantity;
+  int quantAvail;
+} resource;
+
+//OSS functions
 void forkChild(void);
 bool isTimeToSpawn(void);
 void setTimeToSpawn(void);
@@ -47,6 +78,17 @@ void evaluateCmdLineArguments(int, char **);
 void createANDattachMemorySegments(void);
 void initializePCBStruct(void);
 
+
+//User functions
+int willTerminate(void);
+void sendMessage(int, int);
+int pickResourceToRequest(void);
+int takeAction(void);
+void alarmHandler(int);
+void sigquitHandler(int);
+void killLeftoverProcesses(int);
+void processMasterArguments(char **);
+void attachSharedMemorySegments(void); 
 
 
 //PCB Array//
@@ -76,6 +118,19 @@ long long totalProcessLifeTime = 0;
 int totalProcessesSpawned = 0;
 int messageReceived = 0;
 long long *virtualClock;
+int totalGrantedRequests;
+
+//User variables
+//pid_t myPid;
+long long *ossTimer;
+struct clockStruct *mainStruct;
+int processNumber = 0;
+//int masterQueueId;
+const int QUIT_TIMEOUT = 10;
+struct PCB *pcbGroup;
+resource *resourceArray;
+//int shmid, pcbShmid, resourceShmid;
+int timeoutValue;
 
 struct clockStruct *mainStruct;
 

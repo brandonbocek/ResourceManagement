@@ -426,6 +426,10 @@ void processResourceRequests(void) {
 void requestResource(int resourceType, int i) {
     int quant;
     if((quant = resourceArray[resourceType].quantAvail) > 0) {
+		
+		totalGrantedRequests++;
+		printf("Total number of resource requests granted is %d\n", totalGrantedRequests);
+		
         if(vFlag) {
             printf("There are %d out of %d for resource %d available\n", quant, resourceArray[resourceType].quantity, resourceType);
             //fprintf(file,"Process number %d has requested Resource# %d at llu.%llu\n",i, resourceType,mainStruct->virtualClock / NANOPERSECOND, mainStruct->virtualClock % NANOPERSECOND);
