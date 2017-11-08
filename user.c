@@ -1,4 +1,4 @@
-#include "project5oss.h"
+#include "project5.h"
 
 int main (int argc, char **argv) {
 
@@ -52,7 +52,7 @@ int main (int argc, char **argv) {
           int choice = rand() % 2;
           //Request a resource
           if(choice) {
-           pcbGroup[processNumber].request = pickResourceToRequest(); 
+           pcbGroup[processNumber].request = pickResourceToRequest();  
            sendMessage(masterQueueId, 3);
           }
           //release a reasource randomly

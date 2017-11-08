@@ -9,7 +9,6 @@ oss:
 user:
 	gcc -o user user.c
 
-
 clean:
 	rm -f oss
 	rm -f user

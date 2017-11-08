@@ -1,4 +1,4 @@
-#include "project5oss.h"
+#include "project5.h"
 
 
 //static constants
@@ -49,7 +49,7 @@ int main (int argc, char **argv)
 
     do {
 
-        if(isTimeToSpawn()) {
+        if(mainStruct->virtualClock >= timeToSpawn) {
             forkChild();
             setTimeToSpawn();
         }
@@ -191,29 +191,18 @@ void initializePCBStruct(void) {
 
 }
 
-bool isTimeToSpawn(void) {
- 
-    if(vFlag) {
-        //fprintf(file, "Checking time to spawn: future = %llu timer = %llu\n", timeToSpawn, mainStruct->virtualClock);
-    }
-    return mainStruct->virtualClock >= timeToSpawn ? true : false;
-}
-
 //calcualte time to spawn for next child
 void setTimeToSpawn(void) {
-    timeToSpawn = mainStruct->virtualClock + rand() % MAX_FUTURE_SPAWN;
+    timeToSpawn = mainStruct->virtualClock + MIN_FUTURE_SPAWN + rand() % MAX_FUTURE_SPAWN;
     if(vFlag) {
-        printf("Will try to spawn slave at time %llu.%09llu\n", timeToSpawn / NANOPERSECOND, timeToSpawn % NANOPERSECOND);
-    }
-    if(vFlag) {
-        //fprintf(file, "Will try to spawn slave at time %llu\n", timeToSpawn);
+        printf("Will try to spawn slave at time %llu\n", timeToSpawn);
+		fprintf(file, "Will try to spawn slave at time %llu\n", timeToSpawn);
     }
 }
 
 //fork child from master
 void forkChild(void) {
 
-    resourceSnapshot();
     processNumberBeingSpawned = -1;
 
     int i;
@@ -321,8 +310,8 @@ void processMessage(int processNum) {
     int resourceType;
     if((resourceType = pcbGroup[processNum].request) >= 0) {
         if(vFlag) {
-            printf("Found a request from process %d for %d\n", processNum, resourceType);
-            fprintf(file,"Process number %d has requested resource# %d\n",processNum, resourceType,mainStruct->virtualClock / NANOPERSECOND, mainStruct->virtualClock % NANOPERSECOND);
+			//printf("Master has detected Process P%d requesting R%d at time %llu.%03llu\n", processNum, resourceType, mainStruct->virtualClock / NANOPERSECOND, mainStruct->virtualClock % NANOPERSECOND);
+            //fprintf(file, "Master has detected Process P%d requesting R%d at time %llu.%03llu\n", processNum, resourceType, mainStruct->virtualClock / NANOPERSECOND, mainStruct->virtualClock % NANOPERSECOND);
         }
         //If there are resources of the type available, assign it
         requestResource(resourceType, processNum);
@@ -342,7 +331,7 @@ void processMessage(int processNum) {
         }
     }
 
-    processMessage(getMessage());
+    //processMessage(getMessage());
 
 }
 
@@ -366,9 +355,9 @@ void setupResources(void) {
         resourceArray[choice].quantAvail = 1000;
     }
 
-    resourceSnapshot();
+    //resourceSnapshot();
 }
-
+/*
 void resourceSnapshot(void) {
     int i;
 //printf("**************************************");
@@ -379,7 +368,7 @@ void resourceSnapshot(void) {
     }
     //printf("**************************************");
 }
-
+*/
 void processResourceRequests(void) {
    
     int i;
@@ -395,9 +384,8 @@ void processResourceRequests(void) {
         //If the request flag is set with the value of a resource type, process the request
         if((resourceType = pcbGroup[i].request) >= 0) {
             if(vFlag) {
-                printf("Found a request from process %d for %d\n", i, resourceType);
-                //fprintf(file,"Process number %d has requested Resource# %d at %llu.%llu\n",i, resourceType,mainStruct->virtualClock / NANOPERSECOND, mainStruct->virtualClock % NANOPERSECOND);
-
+                printf("Master has detected Process P%d requesting R%d at time %llu.%03llu\n", i, resourceType, mainStruct->virtualClock / NANOPERSECOND, mainStruct->virtualClock % NANOPERSECOND);
+                fprintf(file, "Master has detected Process P%d requesting R%d at time %llu.%03llu\n", i, resourceType, mainStruct->virtualClock / NANOPERSECOND, mainStruct->virtualClock % NANOPERSECOND);
             }
             //If there are resources of the type available, assign it
             requestResource(resourceType, i);
@@ -415,12 +403,36 @@ void processResourceRequests(void) {
             //If there is a process at that location but doesn't meet the above criteria, print
             if(pcbGroup[i].processID > 0) {
                 if(vFlag) {
-                    printf("No request for this process\n");
+                    //printf("No request for this process\n");
                 }
             }
         }
     }
   
+}
+void printResourcesAllocatedToEachProcess(){
+	int i;
+	printf("     R0  R1  R2  R3  R4  R5  R6  R7  R8  R9  R10  R11  R12  R13  R14  R15  R16  R17  R18  R19\n");
+	for(i = 0; i < 10; i++){
+		printf("P%d:  %d   %d   %d   %d   %d   %d   %d   %d   %d   %d   %d    %d    %d    %d    %d    %d    %d    %d    %d    %d\n", i, pcbGroup[i].allocation.quantity[0],
+			pcbGroup[i].allocation.quantity[1], pcbGroup[i].allocation.quantity[2], pcbGroup[i].allocation.quantity[3],
+			pcbGroup[i].allocation.quantity[4], pcbGroup[i].allocation.quantity[5], pcbGroup[i].allocation.quantity[6],
+			pcbGroup[i].allocation.quantity[7], pcbGroup[i].allocation.quantity[8], pcbGroup[i].allocation.quantity[9],
+			pcbGroup[i].allocation.quantity[10], pcbGroup[i].allocation.quantity[11], pcbGroup[i].allocation.quantity[12],
+			pcbGroup[i].allocation.quantity[13], pcbGroup[i].allocation.quantity[14], pcbGroup[i].allocation.quantity[15],
+			pcbGroup[i].allocation.quantity[16], pcbGroup[i].allocation.quantity[17], pcbGroup[i].allocation.quantity[18],
+			pcbGroup[i].allocation.quantity[19]);
+	}
+	for(i = 10; i < ARRAY_SIZE; i++){
+		printf("P%d: %d   %d   %d   %d   %d   %d   %d   %d   %d   %d   %d    %d    %d    %d    %d    %d    %d    %d    %d    %d\n", i, pcbGroup[i].allocation.quantity[0],
+			pcbGroup[i].allocation.quantity[1], pcbGroup[i].allocation.quantity[2], pcbGroup[i].allocation.quantity[3],
+			pcbGroup[i].allocation.quantity[4], pcbGroup[i].allocation.quantity[5], pcbGroup[i].allocation.quantity[6],
+			pcbGroup[i].allocation.quantity[7], pcbGroup[i].allocation.quantity[8], pcbGroup[i].allocation.quantity[9],
+			pcbGroup[i].allocation.quantity[10], pcbGroup[i].allocation.quantity[11], pcbGroup[i].allocation.quantity[12],
+			pcbGroup[i].allocation.quantity[13], pcbGroup[i].allocation.quantity[14], pcbGroup[i].allocation.quantity[15],
+			pcbGroup[i].allocation.quantity[16], pcbGroup[i].allocation.quantity[17], pcbGroup[i].allocation.quantity[18],
+			pcbGroup[i].allocation.quantity[19]);
+	}
 }
 
 void requestResource(int resourceType, int i) {
@@ -428,7 +440,11 @@ void requestResource(int resourceType, int i) {
     if((quant = resourceArray[resourceType].quantAvail) > 0) {
 		
 		totalGrantedRequests++;
-		printf("Total number of resource requests granted is %d\n", totalGrantedRequests);
+		//printf("Total number of resource requests granted is %d\n", totalGrantedRequests);
+		
+		if(((totalGrantedRequests % 20) == 0) && (totalGrantedRequests > 0)) {
+			//printResourcesAllocatedToEachProcess();
+		}
 		
         if(vFlag) {
             printf("There are %d out of %d for resource %d available\n", quant, resourceArray[resourceType].quantity, resourceType);
@@ -441,7 +457,7 @@ void requestResource(int resourceType, int i) {
         //Increase the quantity of the resourceType for the element in the pcbGroup
         //requesting it
         pcbGroup[i].allocation.quantity[resourceType]++;
-        //Reset the request to -1
+        //This process is no longer requesting the resource after allocation
         pcbGroup[i].request = -1;
         //Decrease the quantity of the resource type in the resource array
         resourceArray[resourceType].quantAvail--;
@@ -476,9 +492,6 @@ void performProcessCleanup(int i) {
         printf("	Process %d completed its time\n", i);
         fprintf(file,"	Process %d completed its time\n", i);
     }
-    if(vFlag) {
-        //fprintf(file, "Process completed its time\n");
-    }
     //Go through all the allocations to the dead process and put them back into the
     //resource array
     int j;
@@ -493,13 +506,10 @@ void performProcessCleanup(int i) {
             //Increase the resource type quantAvail in the resource array
             resourceArray[j].quantAvail += returnQuant;
             if(vFlag) {
-                printf("	Returning %d of resource %d from process %d\n", returnQuant, j, i);
-                fprintf(file,"	Process %d returning %d of resource %d due to termination\n", i,returnQuant,j);
-            }
-            if(vFlag) {
+				printf("	Returning %d of resource %d from process %d\n", returnQuant, j, i);
+				fprintf(file,"	Process %d returning %d of resource %d due to termination\n", i,returnQuant,j);
                 printf("There are now %d out of %d for resource %d\n", resourceArray[j].quantAvail, resourceArray[j].quantity, j);
                 fprintf(file,"	There are now %d out of %d for resource %d\n", resourceArray[j].quantAvail, resourceArray[j].quantity, j);
-
 			}
             //Set the quantity of the pcbGroup to 0
             pcbGroup[i].allocation.quantity[j] = 0;
@@ -516,40 +526,48 @@ void performProcessCleanup(int i) {
 
 //returns the number of deadlocked processes
 int deadlockCheck(void) {
-    printf("Begin deadlock detection at %llu.%llu\n", mainStruct->virtualClock / NANOPERSECOND, mainStruct->virtualClock % NANOPERSECOND);
-    fprintf(file,"Begin deadlock detection at %llu.%llu\n", mainStruct->virtualClock / NANOPERSECOND, mainStruct->virtualClock % NANOPERSECOND);
+    //printf("Begin deadlock detection at %llu.%llu\n", mainStruct->virtualClock / NANOPERSECOND, mainStruct->virtualClock % NANOPERSECOND);
+    //fprintf(file,"Begin deadlock detection at %llu.%llu\n", mainStruct->virtualClock / NANOPERSECOND, mainStruct->virtualClock % NANOPERSECOND);
 
-    int work[20];
-    int finish[18];
-
+    int resourceTempArr[20];
+    int safeProcessArr[18];
     int p;
     for(p = 0; p < 20; p++) {
-        work[p] = resourceArray[p].quantAvail;
+        resourceTempArr[p] = resourceArray[p].quantAvail;
     }
     for(p = 0; p < 18; p++) {
-        finish[p] = 0;
+        safeProcessArr[p] = 0;
     }
     for(p = 0; p < 18; p++) {
-        if(!pcbGroup[p].processID) {
-            finish[p] = 1;
+		
+		//If this pcb doesn't have a process, it won't be deadlocked
+        if(pcbGroup[p].processID == 0) {
+            safeProcessArr[p] = 1;
         }
-        if(finish[p]) continue;
-        if(reqLtAvail(work, p)) {
-            finish[p] = 1;
+		
+		// if the process has spawned and it isn't making a request where the resources are unavailable
+        if(!safeProcessArr[p] && reqLtAvail(resourceTempArr, p)) {
+            safeProcessArr[p] = 1;
             int i;
+			// For each resource add what is allocated to what is available to get the original amount of resources available
             for(i = 0; i < 20; i++) {
-                work[i] += pcbGroup[p].allocation.quantity[i];
+               resourceTempArr[i] = resourceTempArr[i] + pcbGroup[p].allocation.quantity[i];
             }
+			
+			// Start this for-loop over again
+			// In order to get an accurate max resources available
             p = -1;
         }
     }
 
-
+	// If there are any processes that have not been set to not deadlocked
+	// That process is 
     int deadlockCount = 0;
     for(p = 0; p < 18; p++) {
-        if(!finish[p]) {
+        if(!safeProcessArr[p]) {
             pcbGroup[p].deadlocked = 1;
-            //fprintf(file,"Process %d is deadlocked\n", p);
+			//printf("Process %d is deadlocked at %llu.%03llu\n", p, mainStruct->virtualClock / NANOPERSECOND, mainStruct->virtualClock % NANOPERSECOND);
+            //fprintf(file, "Process %d is deadlocked at %llu.%03llu\n", p, mainStruct->virtualClock / NANOPERSECOND, mainStruct->virtualClock % NANOPERSECOND);
             deadlockCount++;
         }
         else {
@@ -557,37 +575,41 @@ int deadlockCheck(void) {
         }
     }
 
+	// Tell the user which processes are deadlocked
     if(deadlockCount > 0) {
-        //printf("%d processes: ", deadlockCount);
-        //fprintf(file,"%d processes: ", deadlockCount);
+        printf("Processes: ");
+        fprintf(file, "Processes: ");
+		
         for(p = 0; p < 18; p++) {
-            if(!finish[p]) {
-                //printf("%d ", p); Numbers printing
+            if(!safeProcessArr[p]) {
+                printf("P:%d ", p);
+				fprintf(file, "P:%d ", p);
             }
         }
-        //printf("are deadlocked\n");
-        //fprintf(file,"are deadlocked\n");
-        return deadlockCount;
+		printf("deadlocked\n");
+		fprintf(file, "deadlocked\n");
+        
     }
-    else {
-        fprintf(file,"No processes are deadlocked\n");
-        printf("There are no deadlocks\n");
-        return deadlockCount;
-    }
+	
+	return deadlockCount;
 }
 
-int reqLtAvail(int *work, int p) {
-    if(pcbGroup[p].request == -1) {
+// returns false if the process is making a request but resources are not available for that request
+int reqLtAvail(int *resourceTempArr, int p) {
+	// If the process is not requesting any resource
+    if(pcbGroup[p].request == -1)
         return 1;
-    }
-    if(work[pcbGroup[p].request] > 0) {
+	
+	//If there are resources available for this process's request
+    if(resourceTempArr[pcbGroup[p].request] > 0)
         return 1;
-    }
-    else {
-        return 0;
-    }
+	
+	// The process is deadlocked
+	return 0;
+	
 }
 
+/* Find the resource with the most amount of resources allocated to it and kill*/
 void killAfterDeadlock(void) {
     int process;
     int max = 0;
@@ -606,7 +628,7 @@ void killAfterDeadlock(void) {
         }
     }
     fprintf(file, "	Operating System detected process %d is deadlocked\n", process);
-    printf("Killing process %d\n", process);
+    printf("Killing process %d because it used the most total resources\n", process);
     fprintf(file, "	Killing process %d\n",process);
     pcbGroup[process].deadlocked = 0;
     pcbGroup[process].terminate = 1;
