@@ -355,20 +355,8 @@ void setupResources(void) {
         resourceArray[choice].quantAvail = 1000;
     }
 
-    //resourceSnapshot();
 }
-/*
-void resourceSnapshot(void) {
-    int i;
-//printf("**************************************");
-    for(i = 0; i < 20; i++) {
-        if(vFlag) {
-            printf("Resource %d has %d available out of %d\n", i, resourceArray[i].quantAvail, resourceArray[i].quantity);
-        }
-    }
-    //printf("**************************************");
-}
-*/
+
 void processResourceRequests(void) {
    
     int i;
@@ -392,6 +380,10 @@ void processResourceRequests(void) {
         }
         //If the release flag is set with the value of the resourceType, process it
         else if((resourceType = pcbGroup[i].release) >= 0) {
+			if(vFlag) {
+                printf("Master has detected Process P%d requesting R%d at time %llu.%03llu\n", i, resourceType, mainStruct->virtualClock / NANOPERSECOND, mainStruct->virtualClock % NANOPERSECOND);
+                fprintf(file, "Master has detected Process P%d requesting R%d at time %llu.%03llu\n", i, resourceType, mainStruct->virtualClock / NANOPERSECOND, mainStruct->virtualClock % NANOPERSECOND);
+            }
             releaseResource(resourceType, i);
         }
         //If the process set its processID to -1, that means it died and we can put all
@@ -440,7 +432,6 @@ void requestResource(int resourceType, int i) {
     if((quant = resourceArray[resourceType].quantAvail) > 0) {
 		
 		totalGrantedRequests++;
-		//printf("Total number of resource requests granted is %d\n", totalGrantedRequests);
 		
 		if(((totalGrantedRequests % 20) == 0) && (totalGrantedRequests > 0)) {
 			//printResourcesAllocatedToEachProcess();
@@ -449,8 +440,6 @@ void requestResource(int resourceType, int i) {
         if(vFlag) {
             printf("There are %d out of %d for resource %d available\n", quant, resourceArray[resourceType].quantity, resourceType);
             //fprintf(file,"Process number %d has requested Resource# %d at llu.%llu\n",i, resourceType,mainStruct->virtualClock / NANOPERSECOND, mainStruct->virtualClock % NANOPERSECOND);
-        }
-        if(vFlag) {
             printf("Increased resource %d for process %d\n", resourceType, i);
             //fprintf(file,"Increased resource %d for process %d\n", resourceType, i);
         }
@@ -458,6 +447,7 @@ void requestResource(int resourceType, int i) {
         //requesting it
         pcbGroup[i].allocation.quantity[resourceType]++;
         //This process is no longer requesting the resource after allocation
+		
         pcbGroup[i].request = -1;
         //Decrease the quantity of the resource type in the resource array
         resourceArray[resourceType].quantAvail--;
@@ -528,7 +518,7 @@ void performProcessCleanup(int i) {
 int deadlockCheck(void) {
     //printf("Begin deadlock detection at %llu.%llu\n", mainStruct->virtualClock / NANOPERSECOND, mainStruct->virtualClock % NANOPERSECOND);
     //fprintf(file,"Begin deadlock detection at %llu.%llu\n", mainStruct->virtualClock / NANOPERSECOND, mainStruct->virtualClock % NANOPERSECOND);
-
+	numberOfDeadlockDetectionRuns++;
     int resourceTempArr[20];
     int safeProcessArr[18];
     int p;
@@ -560,37 +550,26 @@ int deadlockCheck(void) {
         }
     }
 
-	// If there are any processes that have not been set to not deadlocked
-	// That process is 
+	// check to see how many processes are deadlocked
     int deadlockCount = 0;
     for(p = 0; p < 18; p++) {
         if(!safeProcessArr[p]) {
             pcbGroup[p].deadlocked = 1;
-			//printf("Process %d is deadlocked at %llu.%03llu\n", p, mainStruct->virtualClock / NANOPERSECOND, mainStruct->virtualClock % NANOPERSECOND);
-            //fprintf(file, "Process %d is deadlocked at %llu.%03llu\n", p, mainStruct->virtualClock / NANOPERSECOND, mainStruct->virtualClock % NANOPERSECOND);
+			// Even when verbose is off Tell the user which processes are deadlocked
+			printf("Process %d was found to be deadlocked at time %llu.%03llu\n", p, mainStruct->virtualClock / NANOPERSECOND, mainStruct->virtualClock % NANOPERSECOND);
+            fprintf(file, "Process %d was found to be deadlocked at time %llu.%03llu\n", p, mainStruct->virtualClock / NANOPERSECOND, mainStruct->virtualClock % NANOPERSECOND);
             deadlockCount++;
         }
         else {
             pcbGroup[p].deadlocked = 0;
         }
     }
-
-	// Tell the user which processes are deadlocked
-    if(deadlockCount > 0) {
-        printf("Processes: ");
-        fprintf(file, "Processes: ");
-		
-        for(p = 0; p < 18; p++) {
-            if(!safeProcessArr[p]) {
-                printf("P:%d ", p);
-				fprintf(file, "P:%d ", p);
-            }
-        }
-		printf("deadlocked\n");
-		fprintf(file, "deadlocked\n");
-        
-    }
 	
+	/*  2 lines to be printed to file and console */
+	if(vFlag && (fileLinesPrinted < LINE_LIMIT-1)) {
+		outputDeadlockStatus(safeProcessArr, deadlockCount);
+		fileLinesPrinted = fileLinesPrinted + 2;
+	}
 	return deadlockCount;
 }
 
@@ -603,10 +582,32 @@ int reqLtAvail(int *resourceTempArr, int p) {
 	//If there are resources available for this process's request
     if(resourceTempArr[pcbGroup[p].request] > 0)
         return 1;
-	
+
 	// The process is deadlocked
 	return 0;
 	
+}
+
+void outputDeadlockStatus(int *safeProcessArr, int numDeadlocked){
+	int i;
+	if(numDeadlocked > 0) {
+        printf("Processes: ");
+        fprintf(file, "Processes: ");
+		
+        for(i = 0; i < ARRAY_SIZE; i++) {
+            if(!safeProcessArr[i]) {
+                printf("P:%d ", i);
+				fprintf(file, "P:%d ", i);
+            }
+        }
+		printf("are deadlocked\n");
+		fprintf(file, "are deadlocked\n");
+    } else {
+		
+		printf("The system is not found to have any deadlock\n");
+		fprintf(file, "The system is not found to have any deadlock\n");
+		
+	}
 }
 
 /* Find the resource with the most amount of resources allocated to it and kill*/
@@ -642,27 +643,22 @@ void interruptHandler(int SIG) {
     signal(SIGINT, SIG_IGN);
 
     if(SIG == SIGINT) {
-        fprintf(stderr, "\nCTRL-C received. Calling shutdown functions.\n");
+        fprintf(stderr, "User gave ctrl-c command, terminating now...\n");
         cleanup();
     }
 
     if(SIG == SIGALRM) {
-        fprintf(stderr, "Master has timed out. Initiating shutdown sequence.\n");
+        fprintf(stderr, "Time limit in OSS reached, terminating now...\n");
         cleanup();
     }
 }
 
 //Cleanup memory and processes.
 void cleanup() {
-
+	printf("Program ending now: the system ran %d deadlock checks for this run\n", numberOfDeadlockDetectionRuns);
     signal(SIGQUIT, SIG_IGN);
     mainStruct->sigNotReceived = 0;
-
-   
     kill(-getpgrp(), SIGQUIT);
-
-
-    printf("Master waiting on all processes do die\n");
     childPid = wait(&status);
 
     //Detach and remove the shared memory after all child process have died
@@ -687,7 +683,6 @@ void cleanup() {
     if(fclose(file)) {
         perror("    Error closing file");
     }
-    printf("Master teminating\n");
 
     exit(1);
 

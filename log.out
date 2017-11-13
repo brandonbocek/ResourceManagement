@@ -1,112 +1,134 @@
 Process number 0 spawned at 0.000000000
-Process number 1 spawned at 0.069557147
-Process number 2 spawned at 0.157740484
-Process number 3 spawned at 0.354263184
-Process number 4 spawned at 0.601472595
-Process number 5 spawned at 0.712429414
-Process number 6 spawned at 0.922228566
-Begin deadlock detection at 1.8623
-	Operating System detected process 1 is deadlocked
-	Killing process 1
-Begin deadlock detection at 1.8623
-	Operating System detected process 2 is deadlocked
-	Killing process 2
-Begin deadlock detection at 1.8623
+Process number 1 spawned at 0.137618177
+Process number 2 spawned at 0.185545180
+Process number 3 spawned at 0.465064383
+Process number 4 spawned at 0.856616586
+Process 0 was found to be deadlocked at time 1.4086
+Process 1 was found to be deadlocked at time 1.4086
+Process 2 was found to be deadlocked at time 1.4086
+Process 3 was found to be deadlocked at time 1.4086
 	Operating System detected process 0 is deadlocked
 	Killing process 0
-Begin deadlock detection at 1.8623
-No processes are deadlocked
-Process number 0 spawned at 1.099733852
-Process number 1 spawned at 1.295010087
-Process number 2 spawned at 1.478390685
-Process number 7 spawned at 1.691402442
-Process number 8 spawned at 1.874862597
-Begin deadlock detection at 2.11683
+Process number 0 spawned at 1.312686995
+Process number 5 spawned at 1.579208790
+Process number 6 spawned at 1.827556080
+Process number 7 spawned at 1.862968705
+Process 1 was found to be deadlocked at time 2.18137
+Process 2 was found to be deadlocked at time 2.18137
+Process 3 was found to be deadlocked at time 2.18137
+Process 4 was found to be deadlocked at time 2.18137
+Process 5 was found to be deadlocked at time 2.18137
+	Operating System detected process 2 is deadlocked
+	Killing process 2
+Process 1 was found to be deadlocked at time 2.18137
+Process 3 was found to be deadlocked at time 2.18137
+Process 4 was found to be deadlocked at time 2.18137
+Process 5 was found to be deadlocked at time 2.18137
+	Operating System detected process 4 is deadlocked
+	Killing process 4
+Process 1 was found to be deadlocked at time 2.18137
+Process 3 was found to be deadlocked at time 2.18137
+Process 5 was found to be deadlocked at time 2.18137
 	Operating System detected process 5 is deadlocked
 	Killing process 5
-Begin deadlock detection at 2.11683
+Process 1 was found to be deadlocked at time 2.18137
+Process 3 was found to be deadlocked at time 2.18137
+	Operating System detected process 1 is deadlocked
+	Killing process 1
+Process number 1 spawned at 2.065767273
+Process number 2 spawned at 2.425028137
+Process number 4 spawned at 2.612257423
+Process number 5 spawned at 2.729805021
+Process number 8 spawned at 2.772203269
+Process 3 was found to be deadlocked at time 3.23395
+Process 6 was found to be deadlocked at time 3.23395
+Process 7 was found to be deadlocked at time 3.23395
 	Operating System detected process 3 is deadlocked
 	Killing process 3
-Begin deadlock detection at 2.11683
-No processes are deadlocked
-Process number 3 spawned at 2.106821067
-Process number 4 spawned at 2.201953152
-Process number 5 spawned at 2.443210668
-Process number 9 spawned at 2.613145777
-Process number 10 spawned at 2.887896524
-Begin deadlock detection at 3.19033
-	Operating System detected process 6 is deadlocked
-	Killing process 6
-Begin deadlock detection at 3.19033
-No processes are deadlocked
-Process number 6 spawned at 3.015197329
-Process number 7 spawned at 3.156134850
-Process number 11 spawned at 3.185217573
-Process number 12 spawned at 3.352418602
-Process number 13 spawned at 3.477146132
-Process number 14 spawned at 3.484808253
-Process number 15 spawned at 3.723905129
-Process number 16 spawned at 3.904922288
-Begin deadlock detection at 4.21865
+Process number 3 spawned at 3.250120898
+Process number 8 spawned at 3.651303727
+Process number 9 spawned at 3.809714877
+Process 6 was found to be deadlocked at time 4.35506
+Process 7 was found to be deadlocked at time 4.35506
+Process 8 was found to be deadlocked at time 4.35506
 	Operating System detected process 8 is deadlocked
 	Killing process 8
-Begin deadlock detection at 4.21865
-No processes are deadlocked
-Process number 8 spawned at 4.013993737
-Process number 17 spawned at 4.081843260
-Process number 4 spawned at 4.276741671
-Process number 10 spawned at 4.394751390
-Begin deadlock detection at 5.26505
-No processes are deadlocked
-Process number 12 spawned at 5.669754012
-Process number 13 spawned at 5.805446917
-Process number 15 spawned at 5.973117820
-Begin deadlock detection at 6.30442
-	Operating System detected process 16 is deadlocked
-	Killing process 16
-Begin deadlock detection at 6.30442
+Process 6 was found to be deadlocked at time 4.35506
+Process 7 was found to be deadlocked at time 4.35506
+	Operating System detected process 6 is deadlocked
+	Killing process 6
+Process 7 was found to be deadlocked at time 4.35506
+	Operating System detected process 7 is deadlocked
+	Killing process 7
+Process number 6 spawned at 4.029912366
+Process number 7 spawned at 4.416034872
+Process number 8 spawned at 4.462466418
+Process number 10 spawned at 4.783193950
+Process number 11 spawned at 4.952189029
+Process 9 was found to be deadlocked at time 5.37658
+Process 10 was found to be deadlocked at time 5.37658
 	Operating System detected process 9 is deadlocked
 	Killing process 9
-Begin deadlock detection at 6.30442
-No processes are deadlocked
-Process number 9 spawned at 6.015362730
-Process number 10 spawned at 6.049717250
-Process number 16 spawned at 6.099376238
-Process number 4 spawned at 6.226424557
-Process number 7 spawned at 6.299759062
-Process number 11 spawned at 6.529784508
-Process number 14 spawned at 6.746653662
-Process number 17 spawned at 6.829598709
-Begin deadlock detection at 7.31798
+Process number 9 spawned at 5.180431929
+Process number 12 spawned at 5.184808674
+Process number 13 spawned at 5.266038630
+Process number 14 spawned at 5.687742900
+Process number 15 spawned at 5.905265774
+Process 10 was found to be deadlocked at time 6.42298
+Process 11 was found to be deadlocked at time 6.42298
+Process 12 was found to be deadlocked at time 6.42298
+Process 13 was found to be deadlocked at time 6.42298
+	Operating System detected process 10 is deadlocked
+	Killing process 10
+Process number 10 spawned at 6.369702894
+Process number 16 spawned at 6.391038150
+Process number 17 spawned at 6.428928153
+Process 11 was found to be deadlocked at time 7.52313
+Process 12 was found to be deadlocked at time 7.52313
+Process 13 was found to be deadlocked at time 7.52313
+Process 14 was found to be deadlocked at time 7.52313
+Process 15 was found to be deadlocked at time 7.52313
+Process 17 was found to be deadlocked at time 7.52313
+	Operating System detected process 11 is deadlocked
+	Killing process 11
+Process number 11 spawned at 7.078420581
+Process number 16 spawned at 7.272821421
+Process 12 was found to be deadlocked at time 8.55876
+Process 13 was found to be deadlocked at time 8.55876
+Process 14 was found to be deadlocked at time 8.55876
+Process 15 was found to be deadlocked at time 8.55876
+Process 17 was found to be deadlocked at time 8.55876
+	Operating System detected process 12 is deadlocked
+	Killing process 12
+Process number 12 spawned at 8.075878349
+Process number 16 spawned at 8.305551260
+Process 13 was found to be deadlocked at time 9.59545
+Process 14 was found to be deadlocked at time 9.59545
+Process 15 was found to be deadlocked at time 9.59545
+Process 16 was found to be deadlocked at time 9.59545
+Process 17 was found to be deadlocked at time 9.59545
+	Operating System detected process 14 is deadlocked
+	Killing process 14
+Process number 14 spawned at 9.290634855
+Process 13 was found to be deadlocked at time 10.59616
+Process 15 was found to be deadlocked at time 10.59616
+Process 16 was found to be deadlocked at time 10.59616
+Process 17 was found to be deadlocked at time 10.59616
+	Operating System detected process 17 is deadlocked
+	Killing process 17
+Process 13 was found to be deadlocked at time 10.59616
+Process 15 was found to be deadlocked at time 10.59616
+Process 16 was found to be deadlocked at time 10.59616
 	Operating System detected process 13 is deadlocked
 	Killing process 13
-Begin deadlock detection at 7.31798
-No processes are deadlocked
-Process number 12 spawned at 7.086324207
-Process number 13 spawned at 7.164066295
-Process number 15 spawned at 7.382993624
-Begin deadlock detection at 8.37384
-No processes are deadlocked
-Process number 11 spawned at 8.311123184
-Begin deadlock detection at 9.45181
-No processes are deadlocked
-Begin deadlock detection at 10.56575
-No processes are deadlocked
-Begin deadlock detection at 11.60493
-No processes are deadlocked
-Begin deadlock detection at 12.70277
-No processes are deadlocked
-Begin deadlock detection at 13.80335
-No processes are deadlocked
-Begin deadlock detection at 14.90507
-No processes are deadlocked
-Begin deadlock detection at 15.92940
-No processes are deadlocked
-Begin deadlock detection at 16.93582
-No processes are deadlocked
-Begin deadlock detection at 17.99001
-No processes are deadlocked
-Begin deadlock detection at 18.103797
-No processes are deadlocked
-Begin deadlock detection at 19.112178
-No processes are deadlocked
+Process number 13 spawned at 10.030158654
+Process number 17 spawned at 10.483562340
+Process 15 was found to be deadlocked at time 11.65577
+Process 16 was found to be deadlocked at time 11.65577
+	Operating System detected process 16 is deadlocked
+	Killing process 16
+Process number 16 spawned at 11.046661084
+Process 15 was found to be deadlocked at time 12.74292
+	Operating System detected process 15 is deadlocked
+	Killing process 15
+Process number 15 spawned at 12.079815789

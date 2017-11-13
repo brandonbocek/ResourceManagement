@@ -1,8 +1,10 @@
 #include "project5.h"
 
+long long lastTimeChecked = 0;
+
 int main (int argc, char **argv) {
 
-  timeoutValue = 30;
+  //timeoutValue = 30;
   shmid = 0;
   pcbShmid = 0;
   resourceShmid = 0;
@@ -28,12 +30,8 @@ int main (int argc, char **argv) {
   //Set the alarm handler
   signal(SIGALRM, killLeftoverProcesses);
 
-  //Set the default alarm time
-  alarm(QUIT_TIMEOUT);
-
-  
-  alarm(timeoutValue);
-
+  //set the alarm
+  alarm(10);
 
   long long duration;
   int notFinished = 1;
@@ -41,35 +39,37 @@ int main (int argc, char **argv) {
   do {
   
     //If request flag -1, not waiting
-    if(pcbGroup[processNumber].request == -1 && pcbGroup[processNumber].release == -1) {
+	if(pcbGroup[processNumber].request == -1 && pcbGroup[processNumber].release == -1) {
       //Check to see if process will terminate
-      if(willTerminate()) {
-        notFinished = 0;
-      }
+		if(willTerminate()) {
+			notFinished = 0;
+      
       //if not take other actions, choose resources to request
-      else {
-        if(takeAction()) {
-          int choice = rand() % 2;
-          //Request a resource
-          if(choice) {
-           pcbGroup[processNumber].request = pickResourceToRequest();  
-           sendMessage(masterQueueId, 3);
-          }
-          //release a reasource randomly
-          else {
-            int i;
-            for(i = 0; i < 20; i++) {
-              if(pcbGroup[processNumber].allocation.quantity[i] > 0) {
-                pcbGroup[processNumber].release = i;
-                break;
-              }
-            }
-            sendMessage(masterQueueId, 3);
-          }
-        }
-      }
-    }
-  } while (notFinished && mainStruct->sigNotReceived && !pcbGroup[processNumber].terminate);
+		} else {
+			if(rand() % 2) {
+				int choice = rand() % 2;
+				//Roll a number to either request or release a resource
+				if(choice) {
+					pcbGroup[processNumber].request = rand() % 20;  
+					sendMessage(masterQueueId, 3);
+				} else{
+				//release a reasource randomly
+					int i;
+					for(i = 0; i < MAXSLAVE; i++) {
+						if(pcbGroup[processNumber].allocation.quantity[i] > 0) {
+							pcbGroup[processNumber].release = i;
+							break;
+						}
+					}
+				}
+				
+				// send update to master
+				sendMessage(masterQueueId, 3);
+			}
+		}
+	}
+    
+	} while (notFinished && mainStruct->sigNotReceived && !pcbGroup[processNumber].terminate);
 
   if(!pcbGroup[processNumber].terminate) {
     pcbGroup[processNumber].processID = -1;
@@ -147,11 +147,16 @@ void attachSharedMemorySegments() {
 
 }
 
+/* Between 0 and 250 ms the process has a chance to terminate */
 int willTerminate(void) {
-  if(mainStruct->virtualClock - pcbGroup[processNumber].createTime >= NANOPERSECOND) {
-    int choice = 1 + rand() % 5;
-    return choice == 1 ? 1 : 0;
+	int terminateChance;
+	if((mainStruct->virtualClock - lastTimeChecked) >= (rand() % userTerminateBound)) {
+  //if(mainStruct->virtualClock - pcbGroup[processNumber].createTime >= NANOPERSECOND) {
+		terminateChance = 1 + rand() % 5;
+		lastTimeChecked = mainStruct->virtualClock;
+		return terminateChance == 1 ? 1 : 0;
   }
+  lastTimeChecked = mainStruct->virtualClock;
   return 0;
 }
 
@@ -172,14 +177,14 @@ void sendMessage(int qid, int msgtype) {
   sprintf(msg.mText, "%d", processNumber);
 
   if(msgsnd(qid, (void *) &msg, sizeof(msg.mText), IPC_NOWAIT) == -1) {
-    perror("    Slave msgsnd error");
+    perror("Child msgsnd ERROR");
   }
 }
 
 //This handles SIGQUIT being sent from parent process
 //It sets the volatile int to 0 so that it will not enter in the CS.
 void sigquitHandler(int sig) {
-
+/*
   if(shmdt(mainStruct) == -1) {
     //perror("    Slave could not detach shared memory");
   }
@@ -191,7 +196,7 @@ void sigquitHandler(int sig) {
   if(shmdt(resourceArray) == -1) {
     //perror("    Slave could not detach from resource array");
   }
-
+*/
   kill(myPid, SIGKILL);
 
   //The slaves have at most 5 more seconds to exit gracefully or they will be SIGTERM'd

@@ -1,23 +1,47 @@
 #ifndef PROJECT5_H
 #define PROJECT5_H
 
-#include <ctype.h>
-#include <sys/wait.h>
+//#include <ctype.h>
+//#include <sys/wait.h>
+//#include <stdio.h>
+//#include <string.h>
+//#include <stdlib.h>
+//#include <unistd.h>
+//#include <getopt.h>
+//#include <sys/types.h>
+//#include <sys/ipc.h>
+//#include <sys/shm.h>
+//#include <sys/stat.h>
+//#include <sys/msg.h>
+//#include <errno.h>
+//#include <time.h>
+//#include <stdbool.h>
+
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 #include <unistd.h>
+#include <errno.h>
+#include <stdint.h>
+#include <signal.h>
+#include <time.h>
 #include <getopt.h>
+#include <assert.h>
+#include <math.h>
+#include <signal.h>
+#include <stdbool.h>
+#include <sys/sem.h>
+#include <sys/shm.h>
+#include <sys/wait.h>
+#include <sys/msg.h>
+#include <sys/stat.h>
 #include <sys/types.h>
 #include <sys/ipc.h>
-#include <sys/shm.h>
-#include <sys/stat.h>
-#include <sys/msg.h>
-#include <errno.h>
-#include <time.h>
-#include <stdbool.h>
 
 #define NANOPERSECOND 1000000000
+#define userTerminateBound 250000000
+#define LINE_LIMIT 1000000
 
 typedef struct clockStruct {
   long long virtualClock;
@@ -78,6 +102,7 @@ void evaluateCmdLineArguments(int, char **);
 void createANDattachMemorySegments(void);
 void initializePCBStruct(void);
 void printResourcesAllocatedToEachProcess();
+void outputDeadlockStatus(int *safeProcessArr, int numDeadlocked);
 
 
 //User functions
@@ -120,6 +145,8 @@ int totalProcessesSpawned = 0;
 int messageReceived = 0;
 long long *virtualClock;
 int totalGrantedRequests;
+int numberOfDeadlockDetectionRuns = 0;
+long long fileLinesPrinted = 0;
 
 //User variables
 //pid_t myPid;
@@ -132,6 +159,7 @@ struct PCB *pcbGroup;
 resource *resourceArray;
 //int shmid, pcbShmid, resourceShmid;
 int timeoutValue;
+int bound;
 
 struct clockStruct *mainStruct;
 
@@ -153,4 +181,4 @@ key_t resourceKey = 9475843;
 key_t masterQueueKey = 5489589;
 key_t clockKey = 9327843;
 
-#ENDIF
+#endif
