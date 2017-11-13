@@ -4,7 +4,6 @@ long long lastTimeChecked = 0;
 
 int main (int argc, char **argv) {
 
-  //timeoutValue = 30;
   shmid = 0;
   pcbShmid = 0;
   resourceShmid = 0;

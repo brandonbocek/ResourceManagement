@@ -1,22 +1,6 @@
 #ifndef PROJECT5_H
 #define PROJECT5_H
 
-//#include <ctype.h>
-//#include <sys/wait.h>
-//#include <stdio.h>
-//#include <string.h>
-//#include <stdlib.h>
-//#include <unistd.h>
-//#include <getopt.h>
-//#include <sys/types.h>
-//#include <sys/ipc.h>
-//#include <sys/shm.h>
-//#include <sys/stat.h>
-//#include <sys/msg.h>
-//#include <errno.h>
-//#include <time.h>
-//#include <stdbool.h>
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
