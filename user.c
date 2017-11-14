@@ -2,103 +2,14 @@
 
 long long lastTimeChecked = 0;
 
-int main (int argc, char **argv) {
+int main (int argc, char *argv[]) {
 
-  shmid = 0;
-  pcbShmid = 0;
-  resourceShmid = 0;
-  myPid = getpid();
+	shmid = 0;
+	resourceShmid = 0;
+	pcbShmid = 0;
+	myPid = getpid();
 
-  
-  //process cmd line arguments passed by master
-    processMasterArguments(argv);
-
-	//attach memory segments
-	attachSharedMemorySegments();
-
-  srand(time(NULL) + getpid());
-
- 
-
-  //Ignore SIGINT so that it can be handled below
-  signal(SIGINT, SIG_IGN);
-
-  //Set the sigquitHandler for the SIGQUIT signal
-  signal(SIGQUIT, sigquitHandler);
-
-  //Set the alarm handler
-  signal(SIGALRM, killLeftoverProcesses);
-
-  //set the alarm
-  alarm(10);
-
-  long long duration;
-  int notFinished = 1;
-
-  do {
-  
-    //If request flag -1, not waiting
-	if(pcbGroup[processNumber].request == -1 && pcbGroup[processNumber].release == -1) {
-      //Check to see if process will terminate
-		if(willTerminate()) {
-			notFinished = 0;
-      
-      //if not take other actions, choose resources to request
-		} else {
-			if(rand() % 2) {
-				int choice = rand() % 2;
-				//Roll a number to either request or release a resource
-				if(choice) {
-					pcbGroup[processNumber].request = rand() % 20;  
-					sendMessage(masterQueueId, 3);
-				} else{
-				//release a reasource randomly
-					int i;
-					for(i = 0; i < MAXSLAVE; i++) {
-						if(pcbGroup[processNumber].allocation.quantity[i] > 0) {
-							pcbGroup[processNumber].release = i;
-							break;
-						}
-					}
-				}
-				
-				// send update to master
-				sendMessage(masterQueueId, 3);
-			}
-		}
-	}
-    
-	} while (notFinished && mainStruct->sigNotReceived && !pcbGroup[processNumber].terminate);
-
-  if(!pcbGroup[processNumber].terminate) {
-    pcbGroup[processNumber].processID = -1;
-    sendMessage(masterQueueId, 3);
-  }
-
-  if(shmdt(mainStruct) == -1) {
-    perror("    Slave could not detach shared memory struct");
-  }
-
-  if(shmdt(pcbGroup) == -1) {
-    perror("    Slave could not detach from shared memory array");
-  }
-
-  if(shmdt(resourceArray) == -1) {
-    perror("    Slave could not detach from resource array");
-  }
-
-  kill(myPid, SIGTERM);
-  sleep(1);
-  kill(myPid, SIGKILL);
-
-
-}
-
-//**************FUNCTIONS****************************
-//get arguments passed by master
-
-void processMasterArguments(char ** argv) {
-
+  /* Command Line args from OSS are processed */
     //message queue segment id
     shmid = atoi(argv[1]);
 
@@ -117,58 +28,111 @@ void processMasterArguments(char ** argv) {
 	//message queue id
 	masterQueueId = atoi(argv[6]);
 
-}
+	//Try to attach to shared memory
+	if((mainStruct = (clockStruct *)shmat(shmid, NULL, 0)) == (void *) -1) {
+		fprintf(stderr, "Error: failed to attach memory segment %i for the virtual clock.\n", shmid);
+		exit(EXIT_SUCCESS);
+	}
 
-//attached shared mem segments
-void attachSharedMemorySegments() {
+	if((pcbGroup = (PCB *)shmat(pcbShmid, NULL, 0)) == (void *) -1) {
+		fprintf(stderr, "Error: Failed to attach memory segment %i for the process control block (PCB)\n", pcbShmid);
+		exit(EXIT_SUCCESS);
+	}
 
-//Try to attach to shared memory
-  if((mainStruct = (clockStruct *)shmat(shmid, NULL, 0)) == (void *) -1) {
-        fprintf(stderr, "Could not attach memory segment %i for the virtual clock.\n", shmid);
-    exit(1);
-  }
+	if((resourceArray = (resource *)shmat(resourceShmid, NULL, 0)) == (void *) -1) {
+		fprintf(stderr, "Error: failed to attach memory segment %i for the resource control block \n", resourceShmid);
+		exit(EXIT_SUCCESS);
+	}
 
-  if((pcbGroup = (PCB *)shmat(pcbShmid, NULL, 0)) == (void *) -1) {
-        fprintf(stderr, "Could not attach memory segment %i for the process control block (PCB)\n", pcbShmid);
-    exit(1);
-  }
+	/* Setting the random number generator */
+	srand(time(NULL) + getpid());
 
-  if((resourceArray = (resource *)shmat(resourceShmid, NULL, 0)) == (void *) -1) {
-        fprintf(stderr, "Could not attach memory segment %i for the resource control block \n", resourceShmid);
-    exit(1);
-  }
+
+	signal(SIGINT, SIG_IGN);
+	signal(SIGQUIT, sigquitHandler);
+	signal(SIGALRM, killLeftoverProcesses);
+
+	/* Child terminates at 10 seconds */
+	alarm(10);
+
+	int i, notFinished = 1;
+
+	do {
   
-   //if((masterQueueId = msgget(masterKey, IPC_CREAT | 0777)) == -1) {
-    //perror("    Slave msgget for master queue");
-    //exit(-1);
-  //}
+    /* If this child has not made a request or release than let it into the CS to maybe make one or the other */
+	if(pcbGroup[processNumber].request == -1 && pcbGroup[processNumber].release == -1) {
+      //Check to see if process will terminate
+		if(processWillEnd()) {
+			notFinished = 0;
+      
+      //if not either request or release a resource
+		} else {
+			if(rand() % 2) {
+				//Roll a number to either request or release a resource
+				int choseToRequestAResource = rand() % 2;
+				if(choseToRequestAResource) {
+					// Randomly choose a resource to request
+					pcbGroup[processNumber].request = rand() % RSRC_ARR_SIZE; 
 
+					// Sending an update to master					
+					sendMessage(masterQueueId, 3);
+				
+				// User will release the lowest index reasource that is allocated to it
+				} else{
+					for(i = 0; i < RSRC_ARR_SIZE; i++) {
+						if(pcbGroup[processNumber].allocation.quantity[i] > 0) {
+							pcbGroup[processNumber].release = i;
+							break;
+						}
+					}
+				}
+				
+				// Sending an update to master
+				sendMessage(masterQueueId, 3);
+			}
+		}
+	}
+    
+	} while (notFinished && mainStruct->sigNotReceived && !pcbGroup[processNumber].terminate);
 
+	/* Tell the master to clear this process's PCB vars */
+	if(!pcbGroup[processNumber].terminate) {
+		pcbGroup[processNumber].processID = -1;
+		sendMessage(masterQueueId, 3);
+	}
+
+	if(shmdt(mainStruct) == -1) {
+		perror("Error: Child failed to detach shared memory struct");
+	}
+
+	if(shmdt(pcbGroup) == -1) {
+		perror("Error: Child failed to detach from shared memory array");
+	}
+
+	if(shmdt(resourceArray) == -1) {
+		perror("Error: Child failed to detach from resource array");
+	}
+
+  kill(myPid, SIGTERM);
+  sleep(1);
+  kill(myPid, SIGKILL);
 }
+/* END MAIN */
 
-/* Between 0 and 250 ms the process has a chance to terminate */
-int willTerminate(void) {
+/* Between 0 and 250 ms since last check, the process has a 20% chance to terminate */
+int processWillEnd(void) {
 	int terminateChance;
-	if((mainStruct->virtualClock - lastTimeChecked) >= (rand() % userTerminateBound)) {
-  //if(mainStruct->virtualClock - pcbGroup[processNumber].createTime >= NANOPERSECOND) {
+	if((mainStruct->virtualClock - lastTimeChecked) >= (rand() % USER_TERMINATE_BOUND)) {
 		terminateChance = 1 + rand() % 5;
 		lastTimeChecked = mainStruct->virtualClock;
 		return terminateChance == 1 ? 1 : 0;
-  }
-  lastTimeChecked = mainStruct->virtualClock;
-  return 0;
+	}	
+	lastTimeChecked = mainStruct->virtualClock;
+	return 0;
 }
 
-int pickResourceToRequest(void) {
-  int choice = rand() % 20;
-  return choice;
-}
 
-int takeAction(void) {
-  int choice = rand() % 2;
-  return choice;
-}
-
+/* Send a message to the master to tell it what the child wants done to itself */
 void sendMessage(int qid, int msgtype) {
   struct msgbuf msg;
 
@@ -176,36 +140,19 @@ void sendMessage(int qid, int msgtype) {
   sprintf(msg.mText, "%d", processNumber);
 
   if(msgsnd(qid, (void *) &msg, sizeof(msg.mText), IPC_NOWAIT) == -1) {
-    perror("Child msgsnd ERROR");
+    perror("Error: Child msgsnd has failed");
   }
 }
 
-//This handles SIGQUIT being sent from parent process
-//It sets the volatile int to 0 so that it will not enter in the CS.
-void sigquitHandler(int sig) {
-/*
-  if(shmdt(mainStruct) == -1) {
-    //perror("    Slave could not detach shared memory");
-  }
-
-  if(shmdt(pcbGroup) == -1) {
-    //perror("    Slave could not detach from shared memory array");
-  }
-
-  if(shmdt(resourceArray) == -1) {
-    //perror("    Slave could not detach from resource array");
-  }
-*/
-  kill(myPid, SIGKILL);
-
-  //The slaves have at most 5 more seconds to exit gracefully or they will be SIGTERM'd
-  alarm(5);
-}
-
-//function to kill itself if the alarm goes off,
-//signaling that the parent could not kill it off
+/* Kills the process if it hasn't been killed by OSS yet */
 void killLeftoverProcesses(int sig) {
-  kill(myPid, SIGTERM);
-  sleep(1);
-  kill(myPid, SIGKILL);
+	kill(myPid, SIGTERM);
+	sleep(1);
+	kill(myPid, SIGKILL);
+}
+
+/* Handles kill signal sent from OSS */
+void sigquitHandler(int sig) {
+	kill(myPid, SIGKILL);
+	alarm(3);
 }
