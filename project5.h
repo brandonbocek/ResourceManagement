@@ -81,7 +81,7 @@ void sendMessage(int, int);
 int detachAndRemoveTimer(int, clockStruct*);
 int detachAndRemoveArray(int, PCB*);
 int detachAndRemoveResource(int, resource*);
-void printHelpMessage(void);
+void printHelpMenu(void);
 void evaluateCmdLineArguments(int, char **);
 void createANDattachMemorySegments(void);
 void initializePCBStruct(void);

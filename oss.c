@@ -89,7 +89,7 @@ void evaluateCmdLineArguments(int _argc, char **_argv) {
     while ((getoptLoop = getopt(_argc, _argv, "hvl:t:")) != -1)
         switch (getoptLoop) {
         case 'h':
-            printHelpMessage();
+            printHelpMenu();
             abort();
         case 'v':
             vFlag = 1;
@@ -588,6 +588,7 @@ int reqLtAvail(int *resourceTempArr, int p) {
 	
 }
 
+/* Output which processes are deadlocked if any */
 void outputDeadlockStatus(int *safeProcessArr, int numDeadlocked){
 	int i;
 	if(numDeadlocked > 0) {
@@ -628,9 +629,9 @@ void killAfterDeadlock(void) {
             }
         }
     }
-    fprintf(file, "	Operating System detected process %d is deadlocked\n", process);
-    printf("Killing process %d because it used the most total resources\n", process);
-    fprintf(file, "	Killing process %d\n",process);
+	// Even when verbose is off tell the user how deadlock was resolved
+    printf("Process %d was killed because it used the most total resources\n", process);
+    fprintf(file, "Process %d was killed because it used the most total resources\n", process);
     pcbGroup[process].deadlocked = 0;
     pcbGroup[process].terminate = 1;
     performProcessCleanup(process);
@@ -681,7 +682,7 @@ void cleanup() {
     msgctl(masterQueueId, IPC_RMID, NULL);
 
     if(fclose(file)) {
-        perror("    Error closing file");
+        perror("Error: failed to close the file pointer.");
     }
 
     exit(1);
@@ -737,7 +738,7 @@ int detachAndRemoveResource(int shmid, resource *shmaddr) {
 
     return -1;
 }
-
+/*
 //Long help message
 void printHelpMessage(void) {
     printf("\n\n***************Command Line Argument Guide***********************************************\n\n");
@@ -746,4 +747,11 @@ void printHelpMessage(void) {
     printf("%-15s%s", "-l filename", "Replace 'filename' with desired output file name (default 'log.out')\n\n");
     printf("%-15s%s", "-t z", "Integer that indicates time(s) until program self terminates (default 20) \n\n");
     printf("*****************************************************************************************\n\n");
+}
+*/
+void printHelpMenu() {
+	printf("\n\t\t~~Help Menu~~\n\t-h This Help Menu Printed\n");
+	printf("\t-v *turns on verbose to see extra log file messages\n");
+	printf("\t-l *log file used*\t\t\t\tie. '-l log.out'\n");
+	printf("\t-t *time in seconds the master will terminate*\tie. -t 20\n\n");
 }
